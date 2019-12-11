@@ -81,13 +81,15 @@
 示例：
 单行代码
 `create database hero;`
+
 代码块
-(```)
+
+```js
 function fun(){
     echo "这是一段代码";
 }
 fun();
-(```)
+```
 
 ### 十、流程图
 
@@ -101,5 +103,3 @@ cond(no)->op
 cond(yes)->e
 cond(yes)=>e
 &```
-
-### Markdown规则
