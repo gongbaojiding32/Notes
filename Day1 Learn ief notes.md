@@ -1,4 +1,4 @@
-# 12th Dec Day1 前端学习笔记
+# 12th Dec  Learn ief day1 notes
 
 课程目标：什么是web,什么是HTML,CSS,JavaScript
 总用时：1.5小时
