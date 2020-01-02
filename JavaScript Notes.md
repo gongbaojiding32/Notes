@@ -2370,7 +2370,267 @@ Number.prototype.doouble = function(){
 
 (123).double()//246
 //最后123外必须加上圆括号，否则后面的点运算符会被解释成小数点
-
-
 ```
 
+---
+
+## Boolean对象
+
+**1.概述**
+
+```js
+if (new Boolean(false)) {
+  console.log('true');
+} // true
+
+if (new Boolean(false).valueOf()) {
+  console.log('true');
+} // 无输出
+//第一个例子之所以得到true，是因为false对应的包装对象实例是一个对象，进行逻辑运算时，被自动转化成布尔值true（因为所有对象对应的布尔值都是true）。而实例的valueOf方法，则返回实例对应的原始值，本例为false。
+```
+
+**Boolean函数的类型转换**
+
+```js
+Boolean(undefined) //false
+Boolean(null) //false
+Boolean(0) // false
+Boolean('') // false
+Boolean(NaN) // false
+
+Boolean(1) // true
+Boolean('false') // true
+Boolean([]) // true
+Boolean({}) // true
+Boolean(function () {}) // true
+Boolean(/foo/) // true
+```
+
+**使用双重运算符(!)也可以将任意值转为对应的布尔值**
+
+```js
+!!undefined // false
+!!null // false
+!!0 // false
+!!'' // false
+!!NaN // false
+
+!!1 // true
+!!'false' // true
+!![] // true
+!!{} // true
+!!function(){} // true
+!!/foo/ // true
+```
+
+**一些特殊值，Boolean对象前加不加new，会得到完全相反的结果，要小心**
+
+```js
+if(Boolean(false)){
+    console.log('true');
+}//无输出
+
+if(new Boolean(false)){
+    console.log('true');
+}//true
+
+if(Boolean(null)){
+    console.log('true');
+}//无输出
+
+if(new Boolean(null)){
+    console.log('true');
+}//true
+```
+
+---
+
+**Number对象**
+**1.概述**
+**Number是数值对应的包装对象，即可以作为构造函数，也可以作为工具函数**
+**作为构造函数，用于生成为数值的对象**
+
+```js
+var n = new Number(1);
+typeof n //'object'
+//Number对象作为构造函数使用，返回一个值为1的对象
+```
+
+**作为工具函数时，可以将任何类型的值转为数值**
+`Number(true) //1`
+
+**2.静态属性**
+- Number.POSITIVE_INFINITY：正的无限，指向Infinity。
+- Number.NEGATIVE_INFINITY：负的无限，指向-Infinity。
+- Number.NaN：表示非数值，指向NaN。
+- Number.MIN_VALUE：表示最小的正数（即最接近0的正数，在64位浮点数体系中为5e-324），相应的，最接近0的负数为-Number.MIN_VALUE。
+- Number.MAX_SAFE_INTEGER：表示能够精确表示的最大整数，即9007199254740991。
+- Number.MIN_SAFE_INTEGER：表示能够精确表示的最小整数，即-9007199254740991
+
+**3.实例方法**
+**3.1 Number.prototype.toString() 将一个数值转为字符串**
+**toString方法只能将十进制的数，转为其他进制的字符串，如果要将其他进制的数，转回十进制，要用parseInt方法**
+
+**3.2 Number.portotype.toFixed() 将一个数转为指定位数的小数，然后返回这个小数对应的字符串**
+**toFixed()方法的参数为小数位数，有效范围为0到20，超出范围抛出RangeError错误**
+**由于浮点数的原因，小数5的四舍五入是不确定的，使用时要小心**
+
+```js
+(10.055).toFixed(2) //10.05
+(10.005).toFixed(2) //10.01
+```
+
+**3.3 Number.prototype.toExponential()  将一个数转为科学计数法形式**
+**toExponential方法的参数是小数点后有效数字的位数，范围为0到20，超出这个范围，会抛出一个 RangeError 错误。**
+
+**3.4 Number.prototype.toPrecision() 将一个数转为指定位数的有效数字**
+**该方法的参数为有效数字的位数，范围1到21，超出范围抛出RangeError错误**
+
+**3.5 Number.prototype.toLocalString() 接受一个地区码作为参数，返回一个字符串，表示当前该数字在该地区的书写形式**
+
+```js
+(123).toLocaleString('zh-Hans-CN-u-nu-hanidec')
+//"一二三"
+```
+
+**该方法还可以接受第二个参数配置对象，用来定制指定用途的返回字符串。style属性指定输出样式，默认值是decimal，表示输出十进制形式，如果为percent，表示输出百分数**
+**如果style属性为currency,则可以搭配currency属性，输出指定格式的货币字符串形式**
+
+```js
+(123).toLocaleString('zh-Hans-CN',{style:'currency',currency:'CNY'})
+// "￥123.00
+(123).toLocaleString('de-DE',{style:'currency',currency:'EUR'})
+// "123,00€"
+(123).toLocaleString('de-DE',{style:'currency',currency:'USD'})
+// "$123.00"
+```
+
+**如果Number.prototype.toLocaleString()省略了参数，则由浏览器自行决定如何处理，通常使用操作系统的地区设定。若该方法使用浏览器不认识的地区码，会抛出一个错误**
+
+**4. 自定义方法**
+
+```js
+Number.prototype.add = function (x) {
+  return this + x;
+};
+
+8['add'](2) // 10
+
+
+Number.prototype.subtract = function (x) {
+  return this - x;
+};
+
+(8).add(2).subtract(4)
+// 6
+
+
+//更复杂方法
+
+Number.prototype.iterate = function(){
+    var rerult = [];
+    for(var i =0;i<=this;i++){
+        result.push(i);
+    }
+    return result;
+};
+(8).iterate()
+//[0,1,2,3,4,5,6,7,8]
+```
+
+**注意，数值的自定义方法，只能定义在它的原型对象Number.prototype上面，数值本身是无法自定义属性的**
+
+
+**String 对象**
+**1.概述**
+**String对象是JavaScript原生提供的三个包装对象之一，用来生成字符串，可以将任何值转为字符串**
+
+**2. 静态方法**
+**2.1 String.fromCharCode() 该方法参数是一个或多个数值，代表Unicode码点，返回值是这些码点组成的字符串**
+
+**3. 实例属性**
+**String.prototype.length 返回字符串的长度**
+
+**4. 实例方法**
+**4.1 Stirng.prototype.charAt() 返回指定位置的字符，参数从0开始编号的位置**
+**如果参数为负数，或大于等于字符串长度，charAt返回空字符串**
+
+**4.2 String.prototype.charCodeAt() 返回字符串指定未知的Unicode码点(十进制表示)，相当于String.fromCHarCode()逆操作**
+
+**4.3 String.prototype.concat() 用于连接两个字符串，返回一个新的字符串，不改变原字符串**
+
+**4.4 String.prototype.slice() 从原字符串取子字符并，不改变原字符串，第一个参数是子字符串开始的位置，第二个参数是字符串的结束位置(不含该位置)**
+
+**4.5 String.prototype.substring() 用于从原字符串取出子字符串并返回，不改变原字符串，，和slice方法横向**
+
+**4.6  String。prototype.substr() 用于从原字符串取出子字符串并返回，不改变原字符串，和slicex相似**
+
+**4.7 String.prototype.indexOf(),String.portotype.lastIndexOf()**
+**indexOf方法用于确定一个字符串在另一个字符串中第一次出现的位置，返回结果是匹配开始的位置，如果返回-1，表示不匹配**
+**lastIndexOf方法从尾部开始匹配**
+
+**4.8 String.prototype.trim() 用于取出字符串两端的空格，返回一个新字符串，不改变原字符串**
+**取出的不仅是空格，还包括制表符(\t,\v),换行符(\n)和回车符(\r)**
+
+**4.9 String.prototype.toLowerCase() 将字符串全部转为小写,String.prototype.toUpperCase() 全部转为大写，都返回一个新字符串，不会改变原字符串**
+
+**4.10 String.prototype.match() 用于确定原字符串是否匹配某个字符串，返回一个数组，成员为匹配的第一个字符串，如果没有找到匹配，则返回null**
+**返回的数组还有index和input属性，分别表示匹配字符串开始的位置和原始字符串**
+
+**4.11 String.prototype.search(),String.prototype.replace()**
+**search方法基本同于match，但返回值为匹配的第一个的位置，如果如果没有找到匹配返回-1**
+
+**4.12 String.prototype.split() 按照给定规则分割字符串，返回一个由分割出来的子字符串组成的数组**
+
+**4.13 String.prototype.localeCompare() 方法用于比较两个字符串，返回一个整数，如果小于0，表示第一个字符串小于第二个字符串，如果等于0，表示两者相等，如果大于0，表示第一个字符串大于第二个字符串**
+
+
+**Math对象**
+**Math对象提供各种数学功能，该对象不是构造函数，不能生成实例，所有的属性和方法都必须在Math对象上调用**
+
+**1.静态属性**
+- Math.E: 常数e
+- Math.LN2: 2的自然对数
+- Math.LN10: 10的自然对数
+- Math.LOG2E: 以2为底的e的对数
+- Math.LOG10E: 以10为底的e的对数
+- Math.PI: 常数π
+- Math.SQRT1_2: 0.5的平方根
+- Math.SQRT2:2的平方根
+
+**2.静态方法**
+**Math对象提供以下一些静态方法**
+- Math.abs(): 绝对值
+- Math.ceil():向上取值
+- Math.floor():向下取整
+- Math.max():最大值 参数为空返回Infinity
+- Math.min():最小值 参数为空返回-Infinity
+- Math.pow():指数运算
+- Math.sqrt():平方根
+- Math.log():自然对数
+- Math.exp():e的指数
+- Math.round():四舍五入
+- Math.random():随机数
+
+
+```js
+function ToInteger(x){
+    x = Number(x);
+    return x < 0 ? Math.ceil(x) : Math.floor(x);
+}
+
+ToInteger(3.2) //3
+ToInteger(3.5) //3
+ToInteger(3.8) //3
+ToInteger(-3.2) //-3
+ToInteger(-3.5) //-3
+ToInteger(-3.8) //-3
+```
+
+**三角函数方法**
+- Math.sin():返回参数的正弦(参数为弧度值)
+- Math.cos():返回参数的余弦(参数为弧度值)
+- Math.tan():返回参数的正切(参数为弧度值)
+- Math.asin():返回参数的反正弦(返回值为弧度值)
+- Math.acos():返回参数的反余弦(返回值为弧度值)
+- Math.atan():返回参数的反正切(返回值为弧度值)
